@@ -4,9 +4,17 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema({
-  name: {
+  firstName: {
     type: String,
-    required: [true, 'Please add a name']
+    required: [true, 'Please add a firstName']
+  },
+  lastName: {
+    type: String,
+    required: [true, 'Please add a lastName']
+  },
+  preferredName: {
+    type: String,
+    required: [true, 'Please add a preferredName']
   },
   email: {
     type: String,
@@ -17,9 +25,29 @@ const UserSchema = new mongoose.Schema({
       'Please add a valid email'
     ]
   },
-  role: {
+  employeeID: {
     type: String,
-    // hm: hr manager, im: inventory mananger, bm: business manager
+    required: [true, 'Please add a name'],
+    unique: true
+  },
+  password: {
+    type: String,
+    required: [true, 'Please add a password'],
+    minlength: 6,
+    select: false
+  },
+  desk: {
+    type: String,
+    required: [true, 'Please add a desk number'],
+    unique: true
+  },
+  cellPhone: {
+    type: String,
+    required: [true, 'Please add a cellPhone number'],
+    unique: true
+  },
+  department: {
+    type: String,
     enum: [
       'user',
       'admin',
@@ -27,7 +55,22 @@ const UserSchema = new mongoose.Schema({
       'Inventory-Manager',
       'Business-Manager'
     ],
-    default: 'user'
+    unique: true
+  },
+  role: {
+    type: String,
+    // hm: hr manager, im: inventory mananger, sm: Sales manager
+    enum: ['Select Dept', 'HR', 'Sales', 'Inventory-Manager', 'IT'],
+    default: 'Select Dept'
+  },
+  location: {
+    type: String,
+    required: [true, 'Please input a location']
+  },
+  description: {
+    type: String,
+    required: [false, 'Please input a loacation'],
+    unique: true
   },
   password: {
     type: String,
