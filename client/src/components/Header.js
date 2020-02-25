@@ -11,7 +11,8 @@ function Header() {
                 border: '1px solid rgb(235, 237, 240)',
                 height: 100,
                 // backgroundImage: `url(${image})`
-                backgroundColor: "teal"
+                backgroundColor: "teal",
+                fontSize: "300px"
             }}
             title="Optimized-ERP"
         />

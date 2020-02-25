@@ -2,9 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import { Layout, Menu, Breadcrumb, Icon } from 'antd';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Route, Link, Switch } from 'react-router-dom';
 import Register from "./Register";
 import Employee from './Employee';
+
 
 const { SubMenu } = Menu;
 const { Header, Content, Footer, Sider } = Layout;
@@ -12,7 +13,7 @@ const { Header, Content, Footer, Sider } = Layout;
 function Navbar(){
 
 return(
-<Router>
+<BrowserRouter>
 <Layout>
     <Content style={{ padding: "0 50px" }}>
       <Breadcrumb style={{ margin: "16px 0" }}>
@@ -48,21 +49,29 @@ return(
         <Content style={{ padding: "0 24px", minHeight: 280 }}>
             {/* <Register/> */}
             {/* <Employee/> */}
-            <Router>
+            
+            
+            <BrowserRouter>
+            <Switch>
               <Route
-                path='/register'
-                render={() => <Register />}
+                exact path='/register'
+                exact component={Register}
               />
+              {/* <Register/> */}
               <Route
-                path="/employee"
-                render={() => <Employee />}
+                exact path="/employee"
+                exact component={Employee}
               />
-            </Router>
+              {/* <Employee/> */}
+              </Switch>
+            </BrowserRouter>
+
+            
         </Content>
       </Layout>
     </Content>
 </Layout>
-</Router>
+</BrowserRouter>
     )
 }
 
