@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import {
     Form,
     Input,
@@ -12,9 +12,10 @@ import {
 
 import Profile from "./Profile"
 import { Upload, message } from 'antd';
-
 import { Layout } from 'antd';
 import { render } from "react-dom";
+import "../assets/styles/style.css"
+
 const { Meta } = Card;
 const { TextArea } = Input;
 
@@ -25,41 +26,17 @@ function Register() {
         {
             value: "manager",
             label: "Manager"
-        },
-        {
-            value: "sale",
-            label: "Sale",
-        },
-        {
-            value: "",
-            label: "Sale",
-        },
-        {
-            value: "sale",
-            label: "Sale",
-        },
+        }
     ];
 
     const departments = [
         {
             value: "business",
             label: "Business"
-        },
-        {
-            value: "business",
-            label: "Business"
-        },
-        {
-            value: "business",
-            label: "Business"
-        },
-        {
-            value: "business",
-            label: "Business"
-        },
+        }
     ]
 
-    const state = {
+    const [values, setValues] = useState ({
         firstName: "",
         lastName: "",
         preferredName: "",
@@ -70,16 +47,27 @@ function Register() {
         cellPhone: "",
         department: "",
         role: "",
-    }
+        location: "",
+        description: ""
+    });
+
+    const { firstName, lastName, preferredName, email, employeeID, password, desk, cellPhone, department, role, location, description } = values;
+
+    const handleChange = name => event => {
+        setValues({...values, error: false, [name]: event.target.value})
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        setValues({...values, error: false});
+
         console.log("Submitted")
         document.getElementById("register-form")
     }
 
     const clearForm = () => {
-        document.getElementById("register-form").reset();
+        document.getElementsByID("register-form").reset();
+        console.log(document.getElementById())
     }
 
     return (
@@ -94,32 +82,56 @@ function Register() {
                         </Col>
 
                         <Col span={8}>
-                            <Form.Item label="First Name:" >
-                                <Input name="firstName" />
+                            <Form.Item id="register-form" label="First Name:" >
+                                <Input name="firstName"
+                                // value={this.state.firstName}
+                                onChange={handleChange('firstName')} 
+                                value={firstName}
+                                />
                             </Form.Item>
                             <Form.Item label="Last Name:" >
-                                <Input name="lastName" />
+                                <Input name="lastName" 
+                                onChange={handleChange('lastName')} 
+                                value={lastName}/>
                             </Form.Item>
                             <Form.Item label="Preferred Name:" >
-                                <Input name="preferredName" />
+                                <Input name="preferredName" 
+                                onChange={handleChange('preferredName')} 
+                                value={preferredName}
+                                />
                             </Form.Item>
                             <Form.Item label="Email:" >
-                                <Input name="email" />
+                                <Input name="email" 
+                                onChange={handleChange('email')} 
+                                value={email}
+                                />
                             </Form.Item>
                             <Form.Item label="Employee ID:" >
-                                <Input name="employeeID" />
+                                <Input name="employeeID" 
+                                onChange={handleChange('employeeID')} 
+                                value={employeeID}
+                                />
                             </Form.Item>
                             <Form.Item label="Password:" >
-                                <Input name="password" />
+                                <Input name="password" 
+                                onChange={handleChange('password')} 
+                                value={password}
+                                />
                             </Form.Item>
                         </Col>
 
                         <Col span={8}>
                             <Form.Item label="Desk:">
-                                <Input name="desk" />
+                                <Input name="desk"
+                                onChange={handleChange('desk')} 
+                                value={desk}
+                                />
                             </Form.Item>
                             <Form.Item label="Cell Phone:" >
-                                <Input name="cellPhone" />
+                                <Input name="cellPhone" 
+                                onChange={handleChange('cellPhone')} 
+                                value={cellPhone}
+                                />
                             </Form.Item>
                             <Form.Item label="Department:" >
                                 <Cascader options={departments} name="department" />
@@ -128,14 +140,19 @@ function Register() {
                                 <Cascader options={roles} name="role" />
                             </Form.Item>
                             <Form.Item label="Location:" >
-                                <Input name="location" />
+                                <Input name="location" 
+                                onChange={handleChange('location')} 
+                                value={location}
+                                />
                             </Form.Item>
                             <Form.Item label="Description:" >
-                                <TextArea name="description" />
+                                <TextArea name="description" 
+                                value={description}
+                                />
                             </Form.Item>
                         </Col>
 
-                        <Col span={8} offset={8}>
+                        <Col span={8} offset={16}>
                             <Form.Item>
                                 <Button style={{ marginRight: 10 }} type="primary" htmlType="submit" onClick={clearForm}>Clear</Button>
                                 <Button type="primary" htmlType="submit" onClick={handleSubmit}>Save</Button>
