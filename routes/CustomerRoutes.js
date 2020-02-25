@@ -3,7 +3,7 @@ const router = express.Router();
 
 const {
   create,
-  productById,
+  customerById,
   read,
   remove,
   update,
@@ -50,6 +50,30 @@ router.post('/products/by/search', searchProductsList);
 router.get('/product/send-product-photo/:productId', sendProductPhoto);
 
 router.param('userId', userById);
-router.param('productId', productById);
+router.param('productId', customerById);
 
 module.exports = router;
+
+//search router.get
+//delete router.delete
+//edit router.put
+//add router.post
+const express = require('express');
+const router = express.Router();
+
+const {
+  add,
+  customerById,
+  read,
+  remove,
+  update,
+  customerSearch
+} = require('../controllers/customerController');
+
+router.get('/customer/:customertId', read);
+router.post('/customer/create/:customerId', add);
+router.delete('/customer/:customertId', remove);
+router.get('customer/searchCustomer/:customerId', customerSearch);
+
+
+
