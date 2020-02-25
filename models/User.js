@@ -3,88 +3,102 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const UserSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: [true, 'Please add a firstName']
+const UserSchema = new mongoose.Schema(
+  {
+    photo: {
+      data: Buffer,
+      contentType: String
+    },
+    firstName: {
+      type: String,
+      required: [true, 'Please add a firstName'],
+      trim: true,
+      maxlength: [50, 'Name can not be more than 50 characters']
+    },
+    lastName: {
+      type: String,
+      required: [true, 'Please add a lastName'],
+      trim: true,
+      maxlength: [50, 'Name can not be more than 50 characters']
+    },
+    preferredName: {
+      type: String,
+      required: [true, 'Please add a preferredName'],
+      trim: true,
+      maxlength: [100, 'Name can not be more than 50 characters']
+    },
+    email: {
+      type: String,
+      required: [true, 'Please add an email'],
+      unique: true,
+      match: [
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        'Please add a valid email'
+      ]
+    },
+    employeeID: {
+      type: String,
+      required: [true, 'Please add a name'],
+      unique: true
+    },
+    password: {
+      type: String,
+      required: [true, 'Please add a password'],
+      minlength: 6,
+      select: false
+    },
+    desk: {
+      type: String,
+      required: [true, 'Please add a desk number'],
+      unique: true
+    },
+    cellPhone: {
+      type: String,
+      required: [true, 'Please add a cellPhone number'],
+      unique: true
+    },
+    department: {
+      type: String,
+      enum: [
+        'user',
+        'admin',
+        'HR-Manager',
+        'Inventory-Manager',
+        'Business-Manager'
+      ],
+      unique: true
+    },
+    role: {
+      type: String,
+      // hm: hr manager, im: inventory mananger, sm: Sales manager
+      enum: ['Select Dept', 'HR', 'Sales', 'Inventory-Manager', 'IT'],
+      default: 'Select Dept'
+    },
+    location: {
+      type: String,
+      required: [true, 'Please input a location']
+    },
+    description: {
+      type: String,
+      required: [false, 'Please input a loacation'],
+      unique: true
+    },
+    password: {
+      type: String,
+      required: [true, 'Please add a password'],
+      minlength: 6,
+      select: false
+    },
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
+    history: {
+      type: Array,
+      default: []
+    }
   },
-  lastName: {
-    type: String,
-    required: [true, 'Please add a lastName']
-  },
-  preferredName: {
-    type: String,
-    required: [true, 'Please add a preferredName']
-  },
-  email: {
-    type: String,
-    required: [true, 'Please add an email'],
-    unique: true,
-    match: [
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-      'Please add a valid email'
-    ]
-  },
-  employeeID: {
-    type: String,
-    required: [true, 'Please add a name'],
-    unique: true
-  },
-  password: {
-    type: String,
-    required: [true, 'Please add a password'],
-    minlength: 6,
-    select: false
-  },
-  desk: {
-    type: String,
-    required: [true, 'Please add a desk number'],
-    unique: true
-  },
-  cellPhone: {
-    type: String,
-    required: [true, 'Please add a cellPhone number'],
-    unique: true
-  },
-  department: {
-    type: String,
-    enum: [
-      'user',
-      'admin',
-      'HR-Manager',
-      'Inventory-Manager',
-      'Business-Manager'
-    ],
-    unique: true
-  },
-  role: {
-    type: String,
-    // hm: hr manager, im: inventory mananger, sm: Sales manager
-    enum: ['Select Dept', 'HR', 'Sales', 'Inventory-Manager', 'IT'],
-    default: 'Select Dept'
-  },
-  location: {
-    type: String,
-    required: [true, 'Please input a location']
-  },
-  description: {
-    type: String,
-    required: [false, 'Please input a loacation'],
-    unique: true
-  },
-  password: {
-    type: String,
-    required: [true, 'Please add a password'],
-    minlength: 6,
-    select: false
-  },
-  resetPasswordToken: String,
-  resetPasswordExpire: Date,
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+
+  { timestamps: true }
+);
 
 // Encrypt password using bcrypt
 UserSchema.pre('save', async function(next) {
