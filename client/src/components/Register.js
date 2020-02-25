@@ -14,7 +14,7 @@ import Profile from "./Profile"
 import { Upload, message } from 'antd';
 import { Layout } from 'antd';
 import { render } from "react-dom";
-import "../styles/style.css"
+import "../assets/styles/style.css"
 
 const { Meta } = Card;
 const { TextArea } = Input;
