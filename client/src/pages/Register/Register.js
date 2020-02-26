@@ -1,4 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+
+import classNames from "classnames/bind";
+import style from "./Register.css"
 import {
     Form,
     Input,
@@ -7,19 +10,20 @@ import {
     Icon,
     Cascader,
     Col,
-    Button
+    Button,
 } from "antd";
 
-import Profile from "./Profile"
+import Profile from "../../components/Profile"
 import { Upload, message } from 'antd';
 import { Layout } from 'antd';
 import { render } from "react-dom";
-import "../assets/styles/style.css"
+import "../Register/Register.css"
 
 const { Meta } = Card;
 const { TextArea } = Input;
 
 const { Header, Footer, Sider, Content } = Layout;
+const cx = classNames.bind(style)
 
 function Register() {
     const roles = [
@@ -71,6 +75,7 @@ function Register() {
     }
 
     return (
+        <div className={cx('Resgister')}>
         <div>
             <Layout>
                 <Content style={{}}>
@@ -162,6 +167,7 @@ function Register() {
 
                 </Content>
             </Layout>
+        </div>
         </div>
     )
 }

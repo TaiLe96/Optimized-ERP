@@ -1,0 +1,15 @@
+.Register {
+    text-align: center;
+  }
+  
+  .ant-input{
+    width: 80%
+  }
+  
+  .ant-cascader-input{
+    width: 80%
+  }
+  
+  .ant-form-item { 
+    margin-left: 50px 
+  }

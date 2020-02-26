@@ -18,7 +18,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 // import CartLanding from './components/cart/CartLanding';
 // import Orders from './admin/Orders';
 
-import Register from "../components/Register"
+import Register from "../pages/Register/Register"
 
 const Routes = () => {
   return (
