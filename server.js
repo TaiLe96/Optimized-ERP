@@ -1,45 +1,57 @@
-const path = require('path');
 const express = require('express');
-// const logger = require('./middleware/logger');
+const mongoose = require('mongoose');
 // Load env vars
-require('dotenv').config({ path: './config/config.env' });
 const morgan = require('morgan');
-const colors = require('colors');
-const fileupload = require('express-fileupload');
-const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const cors = require('cors');
-const errorHandler = require('./middleware/error');
-const connectMongoDBAtlas = require('./config/db');
+const colors = require('colors');
+// to saving user credentials in th cookie
+const cookieParser = require('cookie-parser');
+const expressValidator = require('express-validator');
 
-// Connect to Atlas MongodB
-connectMongoDBAtlas();
+require('dotenv').config();
 
 // Bring Route files
-const auth = require('./routes/auth');
-const users = require('./routes/users');
+const userAuthRoutes = require('./routes/userAuthRoutes');
+const userRoutes = require('./routes/userRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const inventoryRoutes = require('./routes/inventoryRoutes');
 
 const app = express();
 
-// Body parser
-app.use(express.json());
+// Connect to Atlas MongoDB
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true
+  })
+  .then(() =>
+    console.log(`Optimized-ERP Atlas MongoDB Connected!`.cyan.underline.bold)
+  );
 
-// Cookie parser
+mongoose.connection.on('err', err => {
+  console.log(
+    `Optimized-ERP Atlas MongoDB connection error: ${err.message}`.red
+  );
+});
+
+// middlewares
+// trace logs like this "GET /api/signup 404 0.602 ms - 149" in terminal
+app.use(morgan('dev'));
+// get json data from request body
+app.use(bodyParser.json());
 app.use(cookieParser());
-
-// File uploading
-app.use(fileupload());
-
-// Enable CORS
+app.use(expressValidator());
+/** cors with our API will be able to handle the request are coming form different origin */
 app.use(cors());
 
-// Set static folder
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Mount routers
-app.use('/api/auth', auth);
-app.use('/api/users', users);
-
-app.use(errorHandler);
+// express routes middleware
+app.use('/api', userAuthRoutes);
+app.use('/api', userRoutes);
+app.use('/api', categoryRoutes);
+app.use('/api/inventory', inventoryRoutes);
 
 // app.use(logger);
 // Dev loggin middleware
@@ -47,18 +59,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-const PORT = process.env.PORT || 2019;
-
-const server = app.listen(
-  PORT,
-  console.log(
-    `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold
-  )
-);
-
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err, promise) => {
-  console.log(`Error: ${err.message}`.red);
-  // Close server & exit process
-  // server.close(() => process.exit(1));
+const port = process.env.PORT || 2030;
+app.listen(port, () => {
+  console.log(`Optimized-ERP Server is running on port ${port}`.rainbow.bold);
 });
