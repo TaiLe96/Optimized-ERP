@@ -1,128 +1,139 @@
-const crypto = require('crypto');
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const uuidv1 = require('uuid/v1');
 
-const UserSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: [true, 'Please add a firstName']
-  },
-  lastName: {
-    type: String,
-    required: [true, 'Please add a lastName']
-  },
-  preferredName: {
-    type: String,
-    required: [true, 'Please add a preferredName']
-  },
-  email: {
-    type: String,
-    required: [true, 'Please add an email'],
-    unique: true,
-    match: [
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-      'Please add a valid email'
-    ]
-  },
-  employeeID: {
-    type: String,
-    required: [true, 'Please add a name'],
-    unique: true
-  },
-  password: {
-    type: String,
-    required: [true, 'Please add a password'],
-    minlength: 6,
-    select: false
-  },
-  desk: {
-    type: String,
-    required: [true, 'Please add a desk number'],
-    unique: true
-  },
-  cellPhone: {
-    type: String,
-    required: [true, 'Please add a cellPhone number'],
-    unique: true
-  },
-  department: {
-    type: String,
-    enum: [
-      'user',
-      'admin',
-      'HR-Manager',
-      'Inventory-Manager',
-      'Business-Manager'
-    ],
-    unique: true
-  },
-  role: {
-    type: String,
-    // hm: hr manager, im: inventory mananger, sm: Sales manager
-    enum: ['Select Dept', 'HR', 'Sales', 'Inventory-Manager', 'IT'],
-    default: 'Select Dept'
-  },
-  location: {
-    type: String,
-    required: [true, 'Please input a location']
-  },
-  description: {
-    type: String,
-    required: [false, 'Please input a loacation'],
-    unique: true
-  },
-  password: {
-    type: String,
-    required: [true, 'Please add a password'],
-    minlength: 6,
-    select: false
-  },
-  resetPasswordToken: String,
-  resetPasswordExpire: Date,
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+const UserSchema = new mongoose.Schema(
+  {
+    //
+    firstName: {
+      type: String,
+      trim: true,
+      require: true,
+      maxlength: 32
+    },
+    lastName: {
+      type: String,
+      trim: true,
+      require: true,
+      maxlength: 32
+    },
+    preferredName: {
+      type: String,
+      trim: true,
+      require: true,
+      maxlength: 100
+    },
+    email: {
+      type: String,
+      trim: true,
+      require: true,
+      unique: 32
+    },
+    employeeID: {
+      type: String,
+      trim: true,
+      require: true,
+      unique: 32
+    },
+    desk: {
+      type: String,
+      trim: true,
+      require: true,
+      unique: 50
+    },
+    cellPhone: {
+      type: String,
+      trim: true,
+      require: true,
+      unique: 50
+    },
+    department: {
+      type: String,
+      trim: true,
+      require: true,
+      default: 'Select Dept',
+      enum: ['Select Dept', 'HR', 'Sales', 'Inventory', 'IT']
+      // enum means string objects
+    },
+    role: {
+      type: String,
+      default: 'Select Role',
+      enum: [
+        'Select Role',
+        'user',
+        'admin',
+        'HR-Manager',
+        'Inventory-Manager',
+        'Sales-Manager'
+      ]
+      // enum means string objects
+    },
+    location: {
+      type: String,
+      require: true,
+      maxlength: 200
+    },
+    description: {
+      type: String,
+      maxlength: 2000
+    },
 
-// Encrypt password using bcrypt
-UserSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) {
-    next();
-  }
+    photo: {
+      data: Buffer,
+      contentType: String
+    },
 
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-});
+    // virtual filed
+    hashed_password: {
+      type: String,
+      required: true
+    },
+    // User profile
+    about: {
+      type: String,
+      trim: true
+    },
+    // salt needs unique string
+    salt: String,
 
-// Sign JWT and return
-UserSchema.methods.getSignedJwtToken = function() {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE
+    history: {
+      type: Array,
+      default: []
+    }
+  },
+  { timestamps: true }
+);
+
+// virtual field for clien side after install uuid
+UserSchema.virtual('password')
+  .set(function(password) {
+    this._password = password;
+    // salt gives us random string as the hashed password
+    this.salt = uuidv1();
+    this.hashed_password = this.encryptPassword(password);
+  })
+  .get(function() {
+    return this._password;
   });
-};
 
-// Match user entered password to hashed password in database
-UserSchema.methods.matchPassword = async function(enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
+// Create userSchema method to apply encryptPassword
+UserSchema.methods = {
+  // Create authenticate method in user model
+  authenticate: function(plainText) {
+    return this.encryptPassword(plainText) === this.hashed_password;
+  },
 
-// Generate and hash password token
-UserSchema.methods.getResetPasswordToken = function() {
-  // Generate token
-  const resetToken = crypto.randomBytes(20).toString('hex');
-
-  // Hash token and set to resetPasswordToken field
-  this.resetPasswordToken = crypto
-    .createHash('sha256')
-    .update(resetToken)
-    .digest('hex');
-
-  // Set expire
-  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
-
-  return resetToken;
+  encryptPassword: function(password) {
+    if (!password) return '';
+    try {
+      return crypto
+        .createHmac('sha1', this.salt)
+        .update(password)
+        .digest('hex');
+    } catch (err) {
+      return '';
+    }
+  }
 };
 
 module.exports = mongoose.model('User', UserSchema);

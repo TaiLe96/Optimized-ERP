@@ -12,8 +12,8 @@ const expressValidator = require('express-validator');
 require('dotenv').config();
 
 // Bring Route files
-// const auth = require('./routes/auth');
-// const users = require('./routes/users');
+const userAuthRoutes = require('./routes/userAuthRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
@@ -26,14 +26,12 @@ mongoose
     useUnifiedTopology: true
   })
   .then(() =>
-    console.log(
-      `Online Marketplace Atlas MongoDB Connected!`.cyan.underline.bold
-    )
+    console.log(`Optimized-ERP Atlas MongoDB Connected!`.cyan.underline.bold)
   );
 
 mongoose.connection.on('err', err => {
   console.log(
-    `Online Marketplace Atlas MongoDB connection error: ${err.message}`.red
+    `Optimized-ERP Atlas MongoDB connection error: ${err.message}`.red
   );
 });
 
@@ -48,8 +46,8 @@ app.use(expressValidator());
 app.use(cors());
 
 // express routes middleware
-// app.use('/api', authUserRoutes);
-// app.use('/api', userRoutes);
+app.use('/api', userAuthRoutes);
+app.use('/api', userRoutes);
 
 // app.use(logger);
 // Dev loggin middleware
@@ -59,7 +57,5 @@ if (process.env.NODE_ENV === 'development') {
 
 const port = process.env.PORT || 2030;
 app.listen(port, () => {
-  console.log(
-    `Online-Marketplace Server is running on port ${port}`.rainbow.bold
-  );
+  console.log(`Optimized-ERP Server is running on port ${port}`.rainbow.bold);
 });
