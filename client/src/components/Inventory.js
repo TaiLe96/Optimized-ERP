@@ -11,7 +11,6 @@ import { Upload, Icon, message } from 'antd';
 //ItemName
 //Vendor
 //RequestDate
-//RequestDate
 //Requester
 //OrderedDate
 //OrderedBy
@@ -50,35 +49,47 @@ function Inventory(){
         },
       },
       {
-        title: 'Phone',
-        dataIndex: 'telephone',
-        render: (value, row, index) => {
-          const obj = {
-            children: value,
-            props: {},
-          };
-          if (index === 2) {
-            obj.props.rowSpan = 2;
-          }
-          // These two are merged into above cell
-          if (index === 3) {
-            obj.props.rowSpan = 0;
-          }
-          if (index === 4) {
-            obj.props.colSpan = 0;
-          }
-          return obj;
-        },
+        title: 'Item Name',
+        dataIndex: 'itemName'
       },
       {
-        title: 'Email',
-        dataIndex: 'email'
+        title: 'Vendor',
+        dataIndex: 'vendor'
       },
       {
-        title: 'Address',
-        dataIndex: 'address',
+        title: 'Request Date',
+        dataIndex: 'requestDate'
+      },
+      {
+        title: 'Requester',
+        dataIndex: 'requester'
+      },
+      {
+        title: 'Ordered Date',
+        dataIndex: 'orderedDate'
+      },
+      {
+        title: 'Ordered By',
+        dataIndex: 'orderedBy'
+      },
+      {
+        title: 'Received Date',
+        dataIndex: 'receivedDate'
+      },
+      {
+        title: 'Received By',
+        dataIndex: 'receivedBy'
+      },
+      {
+        title: 'Created By',
+        dataIndex: 'createdBy'
+      },
+      {
+        title: 'Created Date',
+        dataIndex: 'createdDate',
         render: renderContent,
       },
+      
       {
         title: 'Action',
         dataIndex: 'delete',
@@ -92,18 +103,17 @@ function Inventory(){
     const data = [
       {
         key: "1",
-        fullName: "Import Export Co.",
-        phone: "555-666-7777",
-        email: "import@export.com",
-        address: "The Fucking Moon"
+        itemID: "3x4MP13",
+        vendor: "TestVendor",
+        requestDate: "TestRequestDate",
+        requester: "TestRequester",
+        orderedDate: "TestOrderedDate",
+        orderedBy: "TestOrderedBy",
+        receivedDate: "TestReceivedDate",
+        receivedBy: "TestReceivedBy",
+        createdBy: "TestCreatedBy",
+        createdDate: "TestCreatedDate",
       },
-      {
-        key: "2",
-        fullName: "Telecom",
-        phone: "111-222-3333",
-        email: "sales@gtelecom.com",
-        address: "The Goddamn Sun"
-      }
     ];
     return(
       <Table columns={columns} dataSource={data} bordered />
