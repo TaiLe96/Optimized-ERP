@@ -12,6 +12,7 @@ const User = require('../models/User');
 // @access    Public
 exports.register = asyncHandler(async (req, res, next) => {
   const {
+    photo,
     firstName,
     lastName,
     preferredName,
@@ -28,6 +29,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 
   // Create user
   const user = await User.create({
+    photo,
     firstName,
     lastName,
     preferredName,

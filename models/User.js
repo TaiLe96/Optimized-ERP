@@ -59,19 +59,21 @@ const UserSchema = new mongoose.Schema(
     },
     department: {
       type: String,
-      enum: [
-        'user',
-        'admin',
-        'HR-Manager',
-        'Inventory-Manager',
-        'Business-Manager'
-      ],
+      enum: ['HR', 'IT', 'Sales', 'Inventory'],
       unique: true
     },
     role: {
       type: String,
       // hm: hr manager, im: inventory mananger, sm: Sales manager
-      enum: ['Select Dept', 'HR', 'Sales', 'Inventory-Manager', 'IT'],
+      enum: [
+        'Select Dept',
+        'user',
+        'admin',
+        'HR-Manager',
+        'Sales',
+        'Inventory-Manager',
+        'IT'
+      ],
       default: 'Select Dept'
     },
     location: {
