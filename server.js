@@ -14,6 +14,8 @@ require('dotenv').config();
 // Bring Route files
 const userAuthRoutes = require('./routes/userAuthRoutes');
 const userRoutes = require('./routes/userRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const inventoryRoutes = require('./routes/inventoryRoutes');
 
 const app = express();
 
@@ -48,6 +50,8 @@ app.use(cors());
 // express routes middleware
 app.use('/api', userAuthRoutes);
 app.use('/api', userRoutes);
+app.use('/api', categoryRoutes);
+app.use('/api/inventory', inventoryRoutes);
 
 // app.use(logger);
 // Dev loggin middleware
